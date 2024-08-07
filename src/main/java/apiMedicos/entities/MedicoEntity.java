@@ -2,6 +2,8 @@ package apiMedicos.entities;
 
 import apiMedicos.enums.EspecialidadeEnum;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,13 +13,17 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class MedicoEntity {
+    public static final String CRM_FORMAT = "CRM/[A-Za-z][A-Za-z]\\s?\\d\\d\\d\\d\\d\\d";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank
     private String nome;
-    @Column(nullable = false)
+
+    @NotBlank
+    @Pattern(regexp="CRM/[A-Za-z][A-Za-z]\\s?\\d\\d\\d\\d\\d\\d")
     private String crm;
 
     private LocalDate dataNascimento;

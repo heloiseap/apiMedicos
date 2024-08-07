@@ -6,6 +6,8 @@ import apiMedicos.dtos.MedicoShortResponse;
 import apiMedicos.entities.MedicoEntity;
 import apiMedicos.enums.EspecialidadeEnum;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 public class MedicoMapper {
@@ -13,11 +15,13 @@ public class MedicoMapper {
     public static MedicoEntity map(MedicoRequest source) {
         if (source == null) return null;
 
+        String dataString = source.getDataNascimento();
+
         MedicoEntity target = new MedicoEntity();
         target.setCrm(source.getCrm());
         target.setNome(source.getNome());
         target.setEspecialidade(EspecialidadeEnum.fromValue(source.getEspecialidade()));
-        target.setDataNascimento(source.getDataNascimento());
+        target.setDataNascimento(LocalDate.parse(dataString));
 
         return target;
     }
