@@ -22,6 +22,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,16 +52,20 @@ public class MedicoService {
 
 
     public void cadastrar(MedicoRequest medicoRequest) {
-        if (medicoRepository.findByCrm(medicoRequest.getCrm()).isPresent()) {
-            throw new DuplicateKeyException("Crm já cadastrado");
-        }
-        if (medicoRequest.getNome() == null) {
-            throw new IllegalArgumentException("Campo nome obrigatório");
-        }
-        if (!medicoRequest.getCrm().matches(MedicoEntity.CRM_FORMAT)) {
-            throw new IllegalArgumentException("CRM deve estar no formato 'CRM/UF XXXXXX' ou 'CRM/UFXXXXXX'");
-        }
+        try {
+            if (medicoRepository.findByCrm(medicoRequest.getCrm()).isPresent()) {
+                throw new DuplicateKeyException("Crm já cadastrado");
+            }
+            if (medicoRequest.getNome() == null || medicoRequest.getNome().isEmpty()) {
+                throw new IllegalArgumentException();
+            }
+            if (!medicoRequest.getCrm().matches(MedicoEntity.CRM_FORMAT)) {
+                throw new InvalidPropertiesFormatException("CRM deve estar no formato 'CRM/UF XXXXXX' ou 'CRM/UFXXXXXX'");
 
+            }
+        } catch (InvalidPropertiesFormatException e) {
+            throw new RuntimeException(e);
+        }
         MedicoEntity medicoEntity = map(medicoRequest);
         medicoRepository.save(medicoEntity);
         ResponseEntity.created(URI.create("")).build();

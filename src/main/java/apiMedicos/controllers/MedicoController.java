@@ -26,7 +26,7 @@ public class MedicoController {
 
     //todo
     @PutMapping
-    @ResponseStatus(HttpStatus.FOUND)
+    //@ResponseStatus(HttpStatus.FOUND)
     public Page<MedicoShortResponse> pesquisa(
             @Valid
             @RequestParam(value = "nome", required = false) String nome,
